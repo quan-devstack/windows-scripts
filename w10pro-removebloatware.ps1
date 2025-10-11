@@ -16,5 +16,52 @@ $BloatApps = @(
     "Microsoft.Microsoft3DViewer",
     "Microsoft.MixedReality.Portal",
     "Microsoft.GetHelp",
-    "Microsoft.OneConnect"
+    "Microsoft.OneConnect",
+    "Microsoft.People",
+    "Microsoft.SkypeApp",
+    "Microsoft.MicrosoftSolitaireCollection",
+    "Microsoft.BingWeather",
+    "Microsoft.ZuneMusic",
+    "Microsoft.ZubeVideo",
+    "Microsoft.News",
+    "Microsoft.MicrosoftStickyNotes",
+    "Microsoft.Todos",
+    "Microsoft.YourPhone",
+    "Microsoft.MSPaint",
+    "Microsoft.MicrosoftPowerBIForWindows",
+    "Microsoft.Advertising.Xaml",
+    "Microsoft.WindowsMaps",
+    "Microsoft.WindowsMaps",
+    "Microsoft.OneNote",
+    "Microsoft.MicrosoftJournal",
+    "Microsoft.Wallet",
+    "Microsoft.ScreenSketch"
 )
+
+# Gỡ từng App
+foreach ($app in $BloatApps) {
+    Write-Host "Đang gỡ: $app" -ForegroundColor Yellow
+    Get-AppxPackage - Name $app -AllUsers | Remove-AppPackage -ErrorAction SilentlyContinue
+    Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $app | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
+}
+
+Write-Host "=== Hoàn tất gỡ Bloatware! ===" -ForegroundColor Green
+
+# Dọn dẹp các package còn sót
+Write-Host "Đang dọn dẹp gói AppX..." -ForegroundColor Cyan
+Get-AppxPackage | Where-Object {$_.NonRemovable -eq $false} | Remove-AppPackage -ErrorAction SilentlyContinue
+
+# Xóa quảng cáo & đề xuất trong Start Menu / Settings
+Write-Host "Tắt quảng cáo & đề xuất hệ thống..." -ForegroundColor Cyan
+
+# Tắt đề xuất trong Start Menu
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SystemPaneSuggestionsEnabled /t REG_DWORD /d 0 /f
+# Tắt quảng cáo trong Settings
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f
+# Tắt tips
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement" /v ScoobeSystemSettingEnabled /t REG_DWORD /d 0 /f
+# Tắt Microsoft Consumer Experience
+reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v DisableConsumerAccountStateContent /t REG_DWORD /d 1 /f
+reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
+
+Write-Host "=== Dọn sạch hoàn tất! Khởi động lại máy để áp dụng thay đổi. ===" -ForegroundColor Green
