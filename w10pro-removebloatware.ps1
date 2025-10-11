@@ -40,19 +40,19 @@ $BloatApps = @(
 
 # Gỡ từng App
 foreach ($app in $BloatApps) {
-    Write-Host "Đang gỡ: $app" -ForegroundColor Yellow
-    Get-AppxPackage - Name $app -AllUsers | Remove-AppPackage -ErrorAction SilentlyContinue
+    Write-Host "Removing...: $app" -ForegroundColor Yellow
+    Get-AppxPackage -Name $app -AllUsers | Remove-AppPackage -ErrorAction SilentlyContinue
     Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $app | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
 }
 
-Write-Host "=== Hoàn tất gỡ Bloatware! ===" -ForegroundColor Green
+Write-Host "=== Bloatware Removed! ===" -ForegroundColor Green
 
 # Dọn dẹp các package còn sót
-Write-Host "Đang dọn dẹp gói AppX..." -ForegroundColor Cyan
+Write-Host "Cleaning AppX Package..." -ForegroundColor Cyan
 Get-AppxPackage | Where-Object {$_.NonRemovable -eq $false} | Remove-AppPackage -ErrorAction SilentlyContinue
 
 # Xóa quảng cáo & đề xuất trong Start Menu / Settings
-Write-Host "Tắt quảng cáo & đề xuất hệ thống..." -ForegroundColor Cyan
+Write-Host "Disable Adversiting & Suggestions..." -ForegroundColor Cyan
 
 # Tắt đề xuất trong Start Menu
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SystemPaneSuggestionsEnabled /t REG_DWORD /d 0 /f
@@ -64,4 +64,4 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement" /
 reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v DisableConsumerAccountStateContent /t REG_DWORD /d 1 /f
 reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
 
-Write-Host "=== Dọn sạch hoàn tất! Khởi động lại máy để áp dụng thay đổi. ===" -ForegroundColor Green
+Write-Host "=== Clean Completed! Restart the computer to commit changes. ===" -ForegroundColor Green
