@@ -48,10 +48,6 @@ foreach ($app in $BloatApps) {
 
 Write-Host "=== Bloatware Removed! ===" -ForegroundColor Green
 
-# Dọn dẹp các package còn sót
-# Write-Host "Cleaning AppX Package..." -ForegroundColor Cyan
-# Get-AppxPackage | Where-Object {$_.NonRemovable -eq $false} | Remove-AppPackage -ErrorAction SilentlyContinue
-
 # Xóa quảng cáo & đề xuất trong Start Menu / Settings
 Write-Host "Disable Adversiting & Suggestions..." -ForegroundColor Cyan
 
